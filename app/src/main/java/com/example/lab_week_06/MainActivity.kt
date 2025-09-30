@@ -1,10 +1,8 @@
 package com.example.lab_week_06
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lab_week_06.model.CatBreed
@@ -17,7 +15,12 @@ class MainActivity : AppCompatActivity() {
     }
     private val catAdapter by lazy {
 //Glide is used here to load the images
-        CatAdapter(layoutInflater, GlideImageLoader(this))
+//Here we are passing the onClickListener function to the Adapter
+        CatAdapter(layoutInflater, GlideImageLoader(this), object :
+            CatAdapter.OnClickListener {
+            //When this is triggered, the pop up dialog will be shown
+            override fun onItemClick(cat: CatModel) = showSelectionDialog(cat)
+        })
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,5 +60,15 @@ class MainActivity : AppCompatActivity() {
                 )
             )
         )
+    }
+    //This will create a pop up dialog when one of the items from the recycler view is clicked.
+    private fun showSelectionDialog(cat: CatModel) {
+        AlertDialog.Builder(this)
+//Set the title for the dialog
+            .setTitle("Cat Selected")
+//Set the message for the dialog
+            .setMessage("You have selected cat ${cat.name}")
+//Set if the OK button should be enabled
+            .setPositiveButton("OK") { _, _ -> }.show()
     }
 }
